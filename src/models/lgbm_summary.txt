@@ -1,0 +1,17 @@
+
+Day 4 Summary — LightGBM Results
+==================================
+Dataset:        CA state, top 50 items
+Train period:   2011-01-29 to 2015-12-31
+Val period:     2016-01-01 to 2016-05-22
+Features used:  24
+Validation:     Walk-forward (no data leakage)
+
+Best config:    {'n_estimators': 1000, 'learning_rate': 0.01, 'num_leaves': 63}
+Best RMSE:      7.4279
+
+Top 3 features by importance:
+feature  importance
+  lag_7        1163
+ lag_14         969
+ lag_28         888
