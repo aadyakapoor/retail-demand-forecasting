@@ -31,7 +31,7 @@ class DemandPredictor:
         data_path = os.path.join(
             BASE_DIR,
             'data',
-            'df_features.csv'
+            'latest_per_item.csv'
         )
 
         with open(model_path, 'rb') as f:
