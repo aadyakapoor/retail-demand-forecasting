@@ -1,7 +1,8 @@
 {
-  "lgbm_weight": 0.7,
-  "prophet_weight": 0.3,
+  "production_model": "lightgbm",
   "rmse_lgbm": 7.427928803763403,
   "rmse_prophet": 11.411296777912105,
-  "rmse_ensemble": 7.713495963605831
+  "rmse_ensemble_best_w0.7": 7.7135,
+  "rmse_ensemble_w0.95": 7.4035,
+  "decision": "LightGBM selected as production model. Tested ensemble weights 0.3-1.0; Prophet underperformed on sparse retail demand and only a near-zero Prophet blend (w=0.95) marginally matched LightGBM alone, not a meaningful improvement."
 }
