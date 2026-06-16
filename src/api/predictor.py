@@ -68,10 +68,10 @@ class DemandPredictor:
             .sort_values('date')
         )
 
-        if len(item_history) < 28:
-            raise ValueError(
-                f"Not enough history for item_id '{item_id}'"
-            )
+        # if len(item_history) < 28:
+        #     raise ValueError(
+        #         f"Not enough history for item_id '{item_id}'"
+        #     )
 
         last_date = item_history['date'].max()
         latest_row = item_history.iloc[-1]
