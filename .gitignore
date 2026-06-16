@@ -6,3 +6,6 @@ __pycache__/
 *.zip
 mlflow/
 .env
+
+mlflow.db
+mlartifacts/
