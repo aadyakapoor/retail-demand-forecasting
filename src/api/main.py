@@ -48,8 +48,7 @@ def get_items():
 
     return {
         "count": len(items),
-        "items": items[:20],
-        "note": "showing first 20 items"
+        "items": items
     }
 
 
