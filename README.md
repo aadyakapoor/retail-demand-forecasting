@@ -1,630 +1,311 @@
-# \# Retail Demand Forecasting System
+# Retail Demand Forecasting System
 
-# 
+End-to-end demand forecasting system built on Walmart's M5 dataset — predicts daily unit sales for retail SKUs 28+ days into the future, served via a live API and interactive dashboard.
 
-# End-to-end demand forecasting system built on Walmart's M5 dataset — predicts daily unit sales for retail SKUs 28+ days into the future, served via a live API and interactive dashboard.
+🔗 **Live Dashboard:** https://retail-demand-forecasting-mwahuymcg5jiv9nxukmq8t.streamlit.app
 
-# 
+🔗 **Live API Docs:** https://retail-demand-forecasting-sua5.onrender.com/docs
 
-# 🔗 \*\*Live Dashboard:\*\* https://retail-demand-forecasting-mwahuymcg5jiv9nxukmq8t.streamlit.app
+---
 
-# 
+## Overview
 
-# 🔗 \*\*Live API Docs:\*\* https://retail-demand-forecasting-sua5.onrender.com/docs
+Retailers need accurate demand forecasts to avoid stockouts and overstocking. This project builds a forecasting pipeline on real Walmart sales data (CA state, top 50 SKUs across 4 stores), benchmarks multiple modelling approaches, and deploys the best model as a production-style REST API with a live dashboard.
 
-# 
+---
 
-# \---
+## Architecture
 
-# 
+```text
+Raw M5 Data (sales, calendar, prices)
+        ↓
+Feature Engineering (lags, rolling stats, calendar, events, price)
+        ↓
+Model Training & Benchmarking (LightGBM vs Prophet vs Ensemble)
+        ↓
+MLflow (experiment tracking, model registry)
+        ↓
+FastAPI (REST API serving forecasts)
+        ↓
+Docker → Render (live deployment)
+        ↓
+Streamlit Dashboard (interactive visualization)
+```
 
-# \## Overview
+---
 
-# 
+## Results
 
-# Retailers need accurate demand forecasts to avoid stockouts and overstocking. This project builds a forecasting pipeline on real Walmart sales data (CA state, top 50 SKUs across 4 stores), benchmarks multiple modelling approaches, and deploys the best-performing model as a production-style REST API with a live dashboard.
+| Model    | RMSE      | Notes                                         |
+| -------- | --------- | --------------------------------------------- |
+| LightGBM | 7.43      | Selected as production model                  |
+| Prophet  | 11.41     | Underperformed on sparse, intermittent demand |
+| Ensemble | 7.40–7.71 | No meaningful improvement over LightGBM alone |
 
-# 
+RMSE measured in units sold per day. Validation used **walk-forward splitting** (train on past, test on future) rather than random splits, avoiding data leakage and reflecting real-world deployment conditions.
 
-# \---
+---
 
-# 
+## Dataset
 
-# \## Architecture
+* Walmart M5 Forecasting Dataset
+* California state stores only
+* Top 50 products by sales volume
+* 4 stores per product
+* Total forecasted series: **200 SKU-store combinations**
 
-# 
+---
 
-# ```text
+## Exploratory Data Analysis Highlights
 
-# Raw M5 Data (sales, calendar, prices)
+* Strong weekly seasonality observed across many products
+* Significant variation in demand between stores
+* Highly intermittent demand for several products (50%+ zero-sale days)
+* SNAP benefit days showed approximately **9.7% uplift** in average sales
+* Product-level demand distributions were highly skewed
 
-# &#x20;       ↓
+---
 
-# Feature Engineering (lags, rolling stats, calendar, events, price)
+## Features Engineered
 
-# &#x20;       ↓
+### Lag Features
 
-# Model Training \& Benchmarking (LightGBM vs Prophet vs Ensemble)
+* Sales lag (7 days)
+* Sales lag (14 days)
+* Sales lag (28 days)
 
-# &#x20;       ↓
+### Rolling Statistics
 
-# MLflow (experiment tracking, model registry)
+* Rolling mean (7 days)
+* Rolling mean (28 days)
+* Rolling standard deviation (7 days)
+* Rolling standard deviation (28 days)
 
-# &#x20;       ↓
+### Calendar Features
 
-# FastAPI (REST API serving forecasts)
+* Day of week
+* Month
+* Week of year
+* Weekend indicator
 
-# &#x20;       ↓
+### Event Features
 
-# Docker → Render (live deployment)
+* Sporting events
+* Cultural events
+* Religious events
+* National events
 
-# &#x20;       ↓
+### Pricing Features
 
-# Streamlit Dashboard (interactive visualization)
+* Current price
+* Relative price
+* Price change percentage
+
+### Other Features
+
+* SNAP benefit indicator
+* Historical demand trends
+
+---
+
+## Model Benchmarking
+
+### LightGBM
+
+* Best overall performance
+* Captured seasonality and demand patterns effectively
+* Selected for production deployment
+
+### Prophet
+
+* Easy baseline model
+* Struggled with sparse and intermittent demand
+* Higher RMSE than LightGBM
+
+### Ensemble
+
+* Combined LightGBM and Prophet predictions
+* Produced marginal changes
+* Did not consistently outperform LightGBM
+
+---
 
-# ```
+## Tech Stack
+
+* Python
+* pandas
+* NumPy
+* LightGBM
+* Prophet
+* MLflow
+* FastAPI
+* Docker
+* Render
+* Streamlit
+* Plotly
 
-# 
+---
 
-# \---
+## Project Structure
 
-# 
+```text
+retail-demand-forecasting/
+│
+├── data/
+│   ├── subset.csv
+│   ├── df_features.csv
+│   └── latest_per_item.csv
+│
+├── notebooks/
+│   ├── 01_data_loading.ipynb
+│   ├── 02_eda.ipynb
+│   ├── 03_feature_engineering.ipynb
+│   ├── 04_lightgbm_model.ipynb
+│   ├── 05_mlflow.ipynb
+│   └── 06_prophet_ensemble.ipynb
+│
+├── src/
+│   ├── api/
+│   │   ├── main.py
+│   │   └── predictor.py
+│   │
+│   └── models/
+│       ├── lgbm_best.pkl
+│       ├── feature_cols.json
+│       └── ensemble_config.json
+│
+├── dashboard/
+│   └── app.py
+│
+├── docker/
+│   └── Dockerfile
+│
+├── assets/
+│
+├── requirements.txt          # Streamlit dashboard dependencies
+├── requirements-api.txt      # FastAPI/Docker dependencies
+└── README.md
+```
 
-# \## Results
+---
 
-# 
+## Running Locally
 
-# | Model    | RMSE (Units Sold/Day) | Notes                                         |
+### Clone Repository
 
-# | -------- | --------------------- | --------------------------------------------- |
+```bash
+git clone https://github.com/aadyakapoor/retail-demand-forecasting.git
+cd retail-demand-forecasting
+```
 
-# | LightGBM | 7.43                  | Selected as production model                  |
+### Run API
 
-# | Prophet  | 11.41                 | Underperformed on sparse, intermittent demand |
+```bash
+pip install -r requirements-api.txt
 
-# | Ensemble | 7.40–7.71             | No meaningful improvement over LightGBM alone |
+cd src/api
 
-# 
+uvicorn main:app --reload --port 8000
+```
 
-# Validation used \*\*walk-forward splitting\*\* (train on past, test on future) rather than random splits, avoiding data leakage and reflecting real-world deployment conditions.
+Open:
 
-# 
+```text
+http://localhost:8000/docs
+```
 
-# \---
+### Run Dashboard
 
-# 
+```bash
+pip install -r requirements.txt
 
-# \## Dataset
+streamlit run dashboard/app.py
+```
 
-# 
+---
 
-# \* Walmart M5 Forecasting Dataset
+## API Endpoints
 
-# \* California state stores only
+### Health Check
 
-# \* Top 50 products by sales volume
+```http
+GET /health
+```
 
-# \* 4 stores per product
+### Available Items
 
-# \* Total forecasted series: \*\*200 SKU-store combinations\*\*
+```http
+GET /items
+```
 
-# 
+Returns all available SKU-store combinations.
 
-# \---
+### Forecast
 
-# 
+```http
+POST /forecast
+```
 
-# \## Exploratory Data Analysis Highlights
+Example request:
 
-# 
+```json
+{
+  "item_id": "FOODS_3_362_CA_1_evaluation",
+  "horizon": 28
+}
+```
 
-# \* Strong weekly seasonality observed across many products
+---
 
-# \* Significant variation in demand between stores
+## Deployment
 
-# \* Highly intermittent demand for several products (50%+ zero-sale days)
+### API
 
-# \* SNAP benefit days showed approximately \*\*9.7% uplift\*\* in average sales
+* FastAPI
+* Dockerized
+* Hosted on Render
 
-# \* Product-level demand distributions were highly skewed
+### Dashboard
 
-# 
+* Streamlit
+* Hosted on Streamlit Community Cloud
 
-# \---
+---
 
-# 
+## Key Learnings
 
-# \## Features Engineered
+* Walk-forward validation is essential for honest time-series evaluation
+* Lag and rolling-window features were stronger predictors than calendar variables alone
+* Intermittent demand is challenging for traditional regression models
+* More models do not necessarily improve performance
+* Production ML involves deployment, monitoring, experiment tracking, and user-facing applications in addition to model building
 
-# 
+---
 
-# \### Lag Features
+## Screenshots
 
-# 
+### Dashboard
 
-# \* Sales lag (7 days)
+![Dashboard](assets/dashboard.png)
 
-# \* Sales lag (14 days)
+### MLflow Experiments
 
-# \* Sales lag (28 days)
+![MLflow Experiments](assets/mlflow_experiments.png)
 
-# 
+### Feature Importance
 
-# \### Rolling Statistics
+![Feature Importance](assets/feature_importance.png)
 
-# 
+### Model Comparison
 
-# \* Rolling mean (7 days)
+![Model Comparison](assets/model_comparison.png)
 
-# \* Rolling mean (28 days)
+---
 
-# \* Rolling standard deviation (7 days)
+## Author
 
-# \* Rolling standard deviation (28 days)
+**Aadya Kapoor**
 
-# 
+Computer Science Student
 
-# \### Calendar Features
-
-# 
-
-# \* Day of week
-
-# \* Month
-
-# \* Week of year
-
-# \* Weekend indicator
-
-# 
-
-# \### Event Features
-
-# 
-
-# \* Sporting events
-
-# \* Cultural events
-
-# \* Religious events
-
-# \* National events
-
-# 
-
-# \### Pricing Features
-
-# 
-
-# \* Current price
-
-# \* Relative price
-
-# \* Price change percentage
-
-# 
-
-# \### Other Features
-
-# 
-
-# \* SNAP benefit indicator
-
-# \* Historical demand trends
-
-# 
-
-# \---
-
-# 
-
-# \## Model Benchmarking
-
-# 
-
-# \### LightGBM
-
-# 
-
-# \* Best overall performance
-
-# \* Captured seasonality and demand patterns effectively
-
-# \* Selected for production deployment
-
-# 
-
-# \### Prophet
-
-# 
-
-# \* Easy baseline model
-
-# \* Struggled with sparse and intermittent demand
-
-# \* Higher RMSE than LightGBM
-
-# 
-
-# \### Ensemble
-
-# 
-
-# \* Combined LightGBM and Prophet predictions
-
-# \* Produced marginal changes
-
-# \* Did not consistently outperform LightGBM
-
-# 
-
-# \---
-
-# 
-
-# \## Tech Stack
-
-# 
-
-# \* Python
-
-# \* pandas
-
-# \* NumPy
-
-# \* LightGBM
-
-# \* Prophet
-
-# \* MLflow
-
-# \* FastAPI
-
-# \* Docker
-
-# \* Render
-
-# \* Streamlit
-
-# \* Plotly
-
-# 
-
-# \---
-
-# 
-
-# \## Project Structure
-
-# 
-
-# ```text
-
-# retail-demand-forecasting/
-
-# │
-
-# ├── data/
-
-# │   ├── subset.csv
-
-# │   ├── df\_features.csv
-
-# │   └── latest\_per\_item.csv
-
-# │
-
-# ├── notebooks/
-
-# │   ├── 01\_data\_loading.ipynb
-
-# │   ├── 02\_eda.ipynb
-
-# │   ├── 03\_feature\_engineering.ipynb
-
-# │   ├── 04\_lightgbm\_model.ipynb
-
-# │   ├── 05\_mlflow.ipynb
-
-# │   └── 06\_prophet\_ensemble.ipynb
-
-# │
-
-# ├── src/
-
-# │   ├── api/
-
-# │   │   ├── main.py
-
-# │   │   └── predictor.py
-
-# │   │
-
-# │   └── models/
-
-# │       ├── lgbm\_best.pkl
-
-# │       ├── feature\_cols.json
-
-# │       └── ensemble\_config.json
-
-# │
-
-# ├── dashboard/
-
-# │   └── app.py
-
-# │
-
-# ├── docker/
-
-# │   └── Dockerfile
-
-# │
-
-# ├── assets/
-
-# │   ├── dashboard.png
-
-# │   ├── mlflow\_experiments.png
-
-# │   ├── feature\_importance.png
-
-# │   └── model\_comparison.png
-
-# │
-
-# ├── requirements.txt          # Streamlit dashboard dependencies
-
-# ├── requirements-api.txt      # FastAPI/Docker dependencies
-
-# └── README.md
-
-# ```
-
-# 
-
-# \---
-
-# 
-
-# \## Running Locally
-
-# 
-
-# \### Clone Repository
-
-# 
-
-# ```bash
-
-# git clone https://github.com/aadyakapoor/retail-demand-forecasting.git
-
-# cd retail-demand-forecasting
-
-# ```
-
-# 
-
-# \### Run API
-
-# 
-
-# ```bash
-
-# pip install -r requirements-api.txt
-
-# 
-
-# cd src/api
-
-# 
-
-# uvicorn main:app --reload --port 8000
-
-# ```
-
-# 
-
-# Open:
-
-# 
-
-# ```text
-
-# http://localhost:8000/docs
-
-# ```
-
-# 
-
-# \### Run Dashboard
-
-# 
-
-# ```bash
-
-# pip install -r requirements.txt
-
-# 
-
-# streamlit run dashboard/app.py
-
-# ```
-
-# 
-
-# \---
-
-# 
-
-# \## API Endpoints
-
-# 
-
-# \### Health Check
-
-# 
-
-# ```http
-
-# GET /health
-
-# ```
-
-# 
-
-# \### Available Items
-
-# 
-
-# ```http
-
-# GET /items
-
-# ```
-
-# 
-
-# Returns all available SKU-store combinations.
-
-# 
-
-# \### Forecast
-
-# 
-
-# ```http
-
-# POST /forecast
-
-# ```
-
-# 
-
-# Example request:
-
-# 
-
-# ```json
-
-# {
-
-# &#x20; "item\_id": "FOODS\_3\_362\_CA\_1\_evaluation",
-
-# &#x20; "horizon": 28
-
-# }
-
-# ```
-
-# 
-
-# \---
-
-# 
-
-# \## Deployment
-
-# 
-
-# \### API
-
-# 
-
-# \* FastAPI
-
-# \* Dockerized
-
-# \* Hosted on Render
-
-# 
-
-# \### Dashboard
-
-# 
-
-# \* Streamlit
-
-# \* Hosted on Streamlit Community Cloud
-
-# 
-
-# \---
-
-# 
-
-# \## Key Learnings
-
-# 
-
-# \* Walk-forward validation is essential for honest time-series evaluation
-
-# \* Lag and rolling-window features were stronger predictors than calendar variables alone
-
-# \* Intermittent demand is challenging for traditional regression models
-
-# \* More models do not necessarily improve performance
-
-# \* Production ML involves deployment, monitoring, experiment tracking, and user-facing applications in addition to model building
-
-# 
-
-# \---
-
-# 
-
-# \## Screenshots
-
-# 
-
-# \### Dashboard
-
-# 
-
-# !\[Dashboard](assets/dashboard.png)
-
-# 
-
-# \### MLflow Experiments
-
-# 
-
-# !\[MLflow Experiments](assets/mlflow\_experiments.png)
-
-# 
-
-# \### Feature Importance
-
-# 
-
-# !\[Feature Importance](assets/feature\_importance.png)
-
-# 
-
-# \### Model Comparison
-
-# 
-
-# !\[Model Comparison](assets/model\_comparison.png)
-
-# 
-
-# \---
-
-# 
-
-# \## Author
-
-# 
-
-# \*\*Aadya Kapoor\*\*
-
-# 
-
-# Computer Science Student
-
-# 
-
-# Built an end-to-end retail demand forecasting system using Walmart's M5 dataset, covering exploratory data analysis, feature engineering, model benchmarking, MLflow experiment tracking, FastAPI deployment, Dockerization, Render hosting, and Streamlit dashboard development.
-
+Built as a production-style machine learning project covering data analysis, feature engineering, experimentation, model deployment, API development, Dockerization, and dashboard creation.
