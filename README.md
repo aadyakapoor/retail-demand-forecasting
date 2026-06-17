@@ -582,7 +582,7 @@
 
 # 
 
-# !\[Dashboard](./assets/dashboard.png)
+# !\[Dashboard](assets/dashboard.png)
 
 # 
 
@@ -590,7 +590,7 @@
 
 # 
 
-# !\[MLflow Experiments](./assets/mlflow\_experiments.png)
+# !\[MLflow Experiments](assets/mlflow\_experiments.png)
 
 # 
 
@@ -598,7 +598,7 @@
 
 # 
 
-# !\[Feature Importance](./assets/feature\_importance.png)
+# !\[Feature Importance](assets/feature\_importance.png)
 
 # 
 
@@ -606,9 +606,7 @@
 
 # 
 
-# !\[Model Comparison](./assets/model\_comparison.png)
-
-# 
+# !\[Model Comparison](assets/model\_comparison.png)
 
 # \---
 
