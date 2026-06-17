@@ -22,7 +22,7 @@
 
 # 
 
-# Retailers need accurate demand forecasts to avoid stockouts and overstocking. This project builds a forecasting pipeline on real Walmart sales data (CA state, top 50 SKUs across 4 stores), benchmarks multiple modelling approaches, and deploys the best model as a production-style REST API with a live dashboard.
+# Retailers need accurate demand forecasts to avoid stockouts and overstocking. This project builds a forecasting pipeline on real Walmart sales data (CA state, top 50 SKUs across 4 stores), benchmarks multiple modelling approaches, and deploys the best-performing model as a production-style REST API with a live dashboard.
 
 # 
 
@@ -74,15 +74,15 @@
 
 # 
 
-# | Model    | RMSE      | Notes                                         |
+# | Model    | RMSE (Units Sold/Day) | Notes                                         |
 
-# | -------- | --------- | --------------------------------------------- |
+# | -------- | --------------------- | --------------------------------------------- |
 
-# | LightGBM | 7.43      | Selected as production model                  |
+# | LightGBM | 7.43                  | Selected as production model                  |
 
-# | Prophet  | 11.41     | Underperformed on sparse, intermittent demand |
+# | Prophet  | 11.41                 | Underperformed on sparse, intermittent demand |
 
-# | Ensemble | 7.40–7.71 | No meaningful improvement over LightGBM alone |
+# | Ensemble | 7.40–7.71             | No meaningful improvement over LightGBM alone |
 
 # 
 
@@ -364,6 +364,14 @@
 
 # ├── assets/
 
+# │   ├── dashboard.png
+
+# │   ├── mlflow\_experiments.png
+
+# │   ├── feature\_importance.png
+
+# │   └── model\_comparison.png
+
 # │
 
 # ├── requirements.txt          # Streamlit dashboard dependencies
@@ -374,7 +382,7 @@
 
 # ```
 
-
+# 
 
 # \---
 
@@ -574,7 +582,7 @@
 
 # 
 
-# !\[Dashboard](assets/dashboard.png)
+# <img src="assets/dashboard.png" width="900">
 
 # 
 
@@ -582,7 +590,7 @@
 
 # 
 
-# !\[MLflow Experiments](assets/mlflow\_experiments.png)
+# <img src="assets/mlflow\_experiments.png" width="900">
 
 # 
 
@@ -590,7 +598,7 @@
 
 # 
 
-# !\[Feature Importance](assets/feature\_importance.png)
+# <img src="assets/feature\_importance.png" width="900">
 
 # 
 
@@ -598,7 +606,7 @@
 
 # 
 
-# !\[Model Comparison](assets/model\_comparison.png)
+# <img src="assets/model\_comparison.png" width="900">
 
 # 
 
@@ -618,7 +626,7 @@
 
 # 
 
-# Built as a production-style machine learning project covering data analysis, feature engineering, experimentation, model deployment, API development, Dockerization, and dashboard creation.
+# Built an end-to-end retail demand forecasting system using Walmart's M5 dataset, covering exploratory data analysis, feature engineering, model benchmarking, MLflow experiment tracking, FastAPI deployment, Dockerization, Render hosting, and Streamlit dashboard development.
 
 
 
