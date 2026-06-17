@@ -582,7 +582,7 @@
 
 # 
 
-# <img src="assets/dashboard.png" width="900">
+# !\[Dashboard](./assets/dashboard.png)
 
 # 
 
@@ -590,7 +590,7 @@
 
 # 
 
-# <img src="assets/mlflow\_experiments.png" width="900">
+# !\[MLflow Experiments](./assets/mlflow\_experiments.png)
 
 # 
 
@@ -598,7 +598,7 @@
 
 # 
 
-# <img src="assets/feature\_importance.png" width="900">
+# !\[Feature Importance](./assets/feature\_importance.png)
 
 # 
 
@@ -606,7 +606,7 @@
 
 # 
 
-# <img src="assets/model\_comparison.png" width="900">
+# !\[Model Comparison](./assets/model\_comparison.png)
 
 # 
 
@@ -627,6 +627,4 @@
 # 
 
 # Built an end-to-end retail demand forecasting system using Walmart's M5 dataset, covering exploratory data analysis, feature engineering, model benchmarking, MLflow experiment tracking, FastAPI deployment, Dockerization, Render hosting, and Streamlit dashboard development.
-
-
 
