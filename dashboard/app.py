@@ -26,6 +26,7 @@ def get_items():
 
 
 items = get_items()
+st.write("Items loaded:", len(items))
 
 if not items:
     st.warning(
