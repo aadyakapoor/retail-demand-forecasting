@@ -18,7 +18,7 @@ st.sidebar.header("Forecast Settings")
 @st.cache_data(ttl=300)
 def get_items():
     try:
-        response = requests.get(f"{API_URL}/items", timeout=60)
+        response = requests.get(f"{API_URL}/items", timeout=180)
         return response.json()["items"]
     except Exception as e:
         st.error(f"Could not connect to API: {e}")
